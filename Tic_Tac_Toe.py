@@ -40,6 +40,21 @@ class Board:
         if self.cells[3] == self.cells[5] == self.cells[7] == "O":
             return -10
         return 0
+    
+    # evaluation function using winning combinations
+    # def evaluation(self):
+    #     winning_combos = [
+    #     (1, 2, 3), (4, 5, 6), (7, 8, 9),  # Rows
+    #     (1, 4, 7), (2, 5, 8), (3, 6, 9),  # Columns
+    #     (1, 5, 9), (3, 5, 7)              # Diagonals
+    # ]
+    #     for a, b, c in winning_combos:
+    #         if self.cells[a] == self.cells[b] == self.cells[c] == "X":
+    #             return 10
+    #         elif self.cells[a] == self.cells[b] == self.cells[c] == "O":
+    #             return -10
+    #     return 0
+
 
         
         
@@ -84,6 +99,58 @@ def get_valid_choice(player):
             print("Invalid choice! Please choose a number between 1 and 9.")
         except ValueError:
             print("Invalid input! Please enter a number.")
+
+
+
+
+
+def get_empty_cell(board):
+    return [i for i in range(1 , 10) if board.cells[i] == " "]
+
+def minmax(board , depth , is_Maximizing , alpha , beta):
+    # minmax using alpha and beta purnning
+
+    score = board.evaluation()
+
+    if score == 10 or score == -10 or " " not in board.cells[1:]:
+        return score
+    if is_Maximizing:
+        max_eval = -float("inf")
+        for i in get_empty_cell(board):
+            board.cells[i] = "X"
+            eval = minmax(board , depth + 1 , False , alpha , beta)
+            board.cells[i] = " "
+            max_eval = max(max_eval , eval)
+            alpha = max(alpha , max_eval)
+            if alpha >= beta:
+                break
+        return max_eval
+    else:
+        min_eval = float("inf")
+        for i in get_empty_cell(board):
+            board.cells[i] = "O"
+            eval = minmax(board , depth + 1 , True , alpha , beta)
+            board.cells[i] = " "
+            min_eval = min(min_eval , eval)
+            beta = min(beta , min_eval)
+            if alpha >= beta:
+                break
+        return min_eval
+
+def best_move(board):
+    best_val = float("inf")
+    best_move = -1
+    for i in get_empty_cell(board):
+        board.cells[i] = "O"
+        move_val = minmax(board , 0 , True , -float("inf") , float("inf"))
+        board.cells[i] = " "
+        if move_val < best_val:
+            best_val = move_val
+            best_move = i
+    return best_move
+
+
+
 
 # 1 Vs 1 Function
 def player_vs_player():
@@ -154,6 +221,33 @@ def player_vs_ai_easy():
             break
 
 
+def player_vs_ai_hard():
+    while True:
+        refresh_board()
+
+        # Get the player's move (X)
+        x_choice = get_valid_choice("X")
+        while board.update_cell(x_choice, "X"):
+            refresh_board()
+            print("Cell already taken! Choose another cell.")
+            x_choice = get_valid_choice("X")
+
+        refresh_board()
+        if Check_winner():
+            break
+
+        # AI move (O)
+        ai_move = best_move(board)
+        if ai_move == -1:
+            break # Tie
+        board.update_cell(ai_move , "O")
+
+        refresh_board()
+
+        if Check_winner():
+            break
+        
+
 
 def game_mode():
     print("Welcome to Tic Tac Toe!")
@@ -176,7 +270,7 @@ def game_mode():
     elif game_mode == 3:
         print("You chose Player vs AI (Hard) mode.")
         # Call the function for player vs AI (Easy)
-        pass
+        player_vs_ai_hard()
 
     else:
         print("Invalid choice!")
