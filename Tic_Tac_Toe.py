@@ -217,6 +217,7 @@ def player_vs_ai_easy():
         board.update_cell(o_choice, "O")
 
         refresh_board()
+
         if Check_winner():
             break
 
@@ -233,6 +234,7 @@ def player_vs_ai_hard():
             x_choice = get_valid_choice("X")
 
         refresh_board()
+        
         if Check_winner():
             break
 
