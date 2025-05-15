@@ -13,25 +13,40 @@ class Board:
             return False
         return True
 
+    # Make Wronge decision
+    # def evaluation(self):
+    #     for i in range(1 , 7 , 3):
+    #         if self.cells[i] == self.cells[i+1] == self.cells[i+2] == "X":
+    #             return +10
+    #         if self.cells[i] == self.cells[i+1] == self.cells[i+2] == "O":
+    #             return -10
+    #     for i in range(1 , 4):
+    #     if self.cells[i] == self.cells[i+3] == self.cells[i+6] == "X":
+    #             return +10
+    #         if self.cells[i] == self.cells[i+3] == self.cells[i+6] == "O":
+    #                 return -10
+    #     if self.cells[1] == self.cells[5] == self.cells[9] == "X":
+    #             return +10
+    #     if self.cells[1] == self.cells[5] == self.cells[9] == "O":
+    #         return -10
+    #     if self.cells[3] == self.cells[5] == self.cells[7] == "X":
+    #         return +10
+    #     if self.cells[3] == self.cells[5] == self.cells[7] == "O":
+    #         return -10
+    #     return 0
+
+        # evaluation function using winning combinations
     def evaluation(self):
-        for i in range(1 , 7 , 3):
-            if self.cells[i] == self.cells[i+1] == self.cells[i+2] == "X":
-                return +10
-            if self.cells[i] == self.cells[i+1] == self.cells[i+2] == "O":
+        winning_combos = [
+        (1, 2, 3), (4, 5, 6), (7, 8, 9),  # Rows
+        (1, 4, 7), (2, 5, 8), (3, 6, 9),  # Columns
+        (1, 5, 9), (3, 5, 7)              # Diagonals
+    ]
+        for a, b, c in winning_combos:
+            if self.cells[a] == self.cells[b] == self.cells[c] == "X":
+                return 10
+            elif self.cells[a] == self.cells[b] == self.cells[c] == "O":
                 return -10
-        for i in range(1 , 4):
-            if self.cells[i] == self.cells[i+3] == self.cells[i+6] == "X":
-                return +10
-            if self.cells[i] == self.cells[i+3] == self.cells[i+6] == "O":
-                    return -10
-        if self.cells[1] == self.cells[5] == self.cells[9] == "X":
-                return +10
-        if self.cells[1] == self.cells[5] == self.cells[9] == "O":
-            return -10
-        if self.cells[3] == self.cells[5] == self.cells[7] == "X":
-            return +10
-        if self.cells[3] == self.cells[5] == self.cells[7] == "O":
-            return -10
         return 0
 
     def get_empty_cells(self):
